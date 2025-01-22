@@ -4,6 +4,7 @@ import "./index.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
+import HeroRag from "./Components/HeroRag.jsx";
 import Login from "./Components/Login.jsx";
 import Register from "./Components/Register.jsx";
 import Root from "./Components/Root.jsx";
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/reg",
         element: <Register />,
+      },
+      {
+        path: "/hero",
+        element: <HeroRag></HeroRag>,
       },
     ],
   },
