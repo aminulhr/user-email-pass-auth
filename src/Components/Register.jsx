@@ -2,9 +2,11 @@ import { createUserWithEmailAndPassword } from "firebase/auth/cordova";
 import { useState } from "react";
 
 import auth from "/firebase.config.js";
+
 const Register = () => {
   const [registerError, setregisterError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassowrd, setShowpassword] = useState(false);
   const handalSubmitFrom = (e) => {
     e.preventDefault();
     const name = e.target.name.value;
@@ -15,13 +17,21 @@ const Register = () => {
     setregisterError("");
     setSuccess("");
 
+    // password warning
+    if (password.length < 6) {
+      setregisterError("Password should be at least 6 characters or longer");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setregisterError("Password must have a Upar case word");
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         setSuccess("user created successfully");
         console.log(result);
       })
       .catch((error) => {
-        setregisterError(error.message);
+        setregisterError("User is already registered .Place Log in now.");
         console.log(error);
       });
   };
@@ -62,17 +72,37 @@ const Register = () => {
                   required
                 />
               </div>
-              <div className="form-control">
+              <div className="form-control relative">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type="password"
+                  type={showPassowrd ? "text" : "password"}
                   name="password"
                   placeholder="password"
                   className="input input-bordered"
                   required
                 />
+                <span
+                  className="text-3xl absolute top-11 right-4"
+                  onClick={() => setShowpassword(!showPassowrd)}
+                >
+                  {showPassowrd ? (
+                    <img
+                      className="w-8 h-8"
+                      src="monkey 2.svg"
+                      alt=""
+                      srcSet=""
+                    />
+                  ) : (
+                    <img
+                      className="w-8 h-8"
+                      src="monkey.svg"
+                      alt=""
+                      srcSet=""
+                    />
+                  )}
+                </span>
                 <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?
@@ -82,7 +112,7 @@ const Register = () => {
               <div className="form-control mt-6">
                 <button className="btn btn-primary">Registration</button>
               </div>
-              {registerError && <p>{registerError}</p>}
+              {registerError && <p className="text-red-600">{registerError}</p>}
 
               <div>
                 <p className="text-green-500">{success}</p>
