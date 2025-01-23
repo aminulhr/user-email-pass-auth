@@ -1,11 +1,29 @@
+import { createUserWithEmailAndPassword } from "firebase/auth/cordova";
+import { useState } from "react";
+
+import auth from "/firebase.config.js";
 const Register = () => {
+  const [registerError, setregisterError] = useState("");
+  const [success, setSuccess] = useState("");
   const handalSubmitFrom = (e) => {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-
     console.log(name, email, password);
+    //reset error
+    setregisterError("");
+    setSuccess("");
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        setSuccess("user created successfully");
+        console.log(result);
+      })
+      .catch((error) => {
+        setregisterError(error.message);
+        console.log(error);
+      });
   };
   return (
     <div>
@@ -64,8 +82,14 @@ const Register = () => {
               <div className="form-control mt-6">
                 <button className="btn btn-primary">Registration</button>
               </div>
+              {registerError && <p>{registerError}</p>}
+
+              <div>
+                <p className="text-green-500">{success}</p>
+              </div>
             </form>
           </div>
+          <div></div>
         </div>
       </div>
     </div>

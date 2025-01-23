@@ -1,10 +1,24 @@
+import { createUserWithEmailAndPassword } from "firebase/auth/cordova";
+import { useState } from "react";
+import auth from "./../../firebase.config";
+
 const HeroRag = () => {
+  const [regiterError, setRegisterError] = useState("");
   const handalSubmitFrom = (e) => {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(name, email, password);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setRegisterError(error.message);
+        console.log(error);
+      });
   };
   return (
     <div>
@@ -65,6 +79,9 @@ const HeroRag = () => {
                   <button className="btn btn-primary">Hero Registration</button>
                 </div>
               </form>
+              {regiterError && (
+                <p className="text-red-600 mx-auto mb-4">{regiterError}</p>
+              )}
             </div>
           </div>
         </div>
