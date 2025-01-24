@@ -12,7 +12,8 @@ const Register = () => {
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(name, email, password);
+    const accepted = e.target.terms.checked;
+    console.log(name, email, password, accepted);
     //reset error
     setregisterError("");
     setSuccess("");
@@ -23,6 +24,9 @@ const Register = () => {
       return;
     } else if (!/[A-Z]/.test(password)) {
       setregisterError("Password must have a Upar case word");
+      return;
+    } else if (!accepted) {
+      setregisterError("Place Accept our terms and conditions");
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
@@ -83,6 +87,7 @@ const Register = () => {
                   className="input input-bordered"
                   required
                 />
+
                 <span
                   className="text-3xl absolute top-11 right-4"
                   onClick={() => setShowpassword(!showPassowrd)}
@@ -108,6 +113,12 @@ const Register = () => {
                     Forgot password?
                   </a>
                 </label>
+                <div>
+                  <input type="checkbox" name="terms" id="terms" />
+                  <label className="p-1" htmlFor="terms">
+                    Accept Our terms and Condition
+                  </label>
+                </div>
               </div>
               <div className="form-control mt-6">
                 <button className="btn btn-primary">Registration</button>
