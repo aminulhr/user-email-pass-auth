@@ -13,7 +13,7 @@ const Navbr = () => {
         <NavLink to="/reg">Registration</NavLink>
       </li>
       <li>
-        <NavLink to="/hero">Hero</NavLink>
+        <NavLink to="/hero">Hero Login</NavLink>
       </li>
     </>
   );

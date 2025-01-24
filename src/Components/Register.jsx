@@ -1,6 +1,9 @@
-import { createUserWithEmailAndPassword } from "firebase/auth/cordova";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth/cordova";
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 import auth from "/firebase.config.js";
 
 const Register = () => {
@@ -33,6 +36,9 @@ const Register = () => {
       .then((result) => {
         setSuccess("user created successfully");
         console.log(result);
+        sendEmailVerification(result.user).then(() => {
+          alert("Check your Email");
+        });
       })
       .catch((error) => {
         setregisterError("User is already registered .Place Log in now.");
@@ -128,6 +134,12 @@ const Register = () => {
               <div>
                 <p className="text-green-500">{success}</p>
               </div>
+              <p>
+                If You Already Register user
+                <Link className="underline mx-1  text-blue-700" to="/hero">
+                  Place Login Now
+                </Link>
+              </p>
             </form>
           </div>
           <div></div>

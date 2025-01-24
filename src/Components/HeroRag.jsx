@@ -1,44 +1,53 @@
-import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import path
-import { useState } from "react";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth"; // Correct import path
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import auth from "/firebase.config.js";
 
 const Register = () => {
   const [logInError, setlogInError] = useState("");
   const [success, setSuccess] = useState("");
-  const [showPassowrd, setShowpassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Corrected typo
+  const emailRef = useRef(null);
 
-  const handalSubmitFrom = (e) => {
+  const handleSubmitForm = (e) => {
+    // Corrected typo
     e.preventDefault();
-    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const accepted = e.target.terms.checked;
-    console.log(name, email, password, accepted);
+    console.log(email, password);
     //reset error
     setlogInError("");
     setSuccess("");
 
-    // password warning
-    if (password.length < 6) {
-      setlogInError("Password should be at least 6 characters or longer");
-      return;
-    } else if (!/[A-Z]/.test(password)) {
-      setlogInError("Password must have a Upar case word");
-      return;
-    } else if (!accepted) {
-      setlogInError("Place Accept our terms and conditions");
-      return;
-    }
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        setSuccess("user Log in  successfully");
+        setSuccess("User logged in successfully");
         console.log(result);
       })
       .catch((error) => {
-        setlogInError("wrong email and password");
+        setlogInError("Wrong email or password");
         console.log(error);
       });
   };
+
+  const handleResetPassword = () => {
+    const email = emailRef.current.value;
+    // if (!email) {
+    //   console.log("Send email reset", emailRef.current.value);
+    //   return;
+    // }
+    sendPasswordResetEmail(auth, email) // Corrected typo
+      .then(() => {
+        alert("Check your email for reset instructions");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div>
       <div className="hero bg-base-200 min-h-screen">
@@ -52,18 +61,9 @@ const Register = () => {
             </p>
           </div>
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-            <form onSubmit={handalSubmitFrom} className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Name</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  className="input input-bordered"
-                />
-              </div>
+            <form onSubmit={handleSubmitForm} className="card-body">
+              {" "}
+              {/* Corrected typo */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
@@ -74,6 +74,7 @@ const Register = () => {
                   placeholder="email"
                   className="input input-bordered"
                   required
+                  ref={emailRef}
                 />
               </div>
               <div className="form-control relative">
@@ -81,7 +82,7 @@ const Register = () => {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type={showPassowrd ? "text" : "password"}
+                  type={showPassword ? "text" : "password"} // Corrected typo
                   name="password"
                   placeholder="password"
                   className="input input-bordered"
@@ -89,9 +90,9 @@ const Register = () => {
                 />
                 <span
                   className="text-3xl absolute top-11 right-4"
-                  onClick={() => setShowpassword(!showPassowrd)}
+                  onClick={() => setShowPassword(!showPassword)} // Corrected typo
                 >
-                  {showPassowrd ? (
+                  {showPassword ? (
                     <img
                       className="w-8 h-8"
                       src="monkey 2.svg"
@@ -108,16 +109,14 @@ const Register = () => {
                   )}
                 </span>
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
+                  <a
+                    onClick={handleResetPassword}
+                    href="#"
+                    className="label-text-alt link link-hover"
+                  >
                     Forgot password?
                   </a>
                 </label>
-                <div>
-                  <input type="checkbox" name="terms" id="terms" />
-                  <label className="p-1" htmlFor="terms">
-                    Accept Our terms and Condition
-                  </label>
-                </div>
               </div>
               <div className="form-control mt-6">
                 <button className="btn btn-primary">Log In</button>
@@ -126,9 +125,14 @@ const Register = () => {
               <div>
                 <p className="text-green-500">{success}</p>
               </div>
+              <p>
+                If you are new to the site, please
+                <Link className="underline mx-1 text-blue-700" to="/reg">
+                  register
+                </Link>
+              </p>
             </form>
           </div>
-          <div></div>
         </div>
       </div>
     </div>
